@@ -2,6 +2,7 @@ package fresh
 
 import (
 	"context"
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -53,6 +54,12 @@ func (c *Context) FormValue(name string) string {
 
 func (c *Context) Redirect(url string, code int) error {
 	return nil
+}
+
+func (c *Context) JSON(status int, v any) error {
+	c.Response.Header().Set("Content-Type", "application/json")
+	c.Response.WriteHeader(status)
+	return json.NewDecoder(c.Request.Body).Decode(&v)
 }
 
 type Plug func(Handler) Handler
